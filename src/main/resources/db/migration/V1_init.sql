@@ -1,5 +1,5 @@
 create table users (
-    id serial primary key,
+    id bigserial primary key,
     username varchar(255) not null,
     password varchar(255) not null,
     created_at timestamp not null default now(),
@@ -11,8 +11,8 @@ insert into users (username, password) values ('user', 'user');
 create type transaction_type as enum ('INCOME', 'EXPENSE');
 
 create table transactions (
-    id serial primary key,
-    user_id int not null,
+    id bigserial primary key,
+    user_id bigint not null,
     amount decimal(10, 2) not null,
     type transaction_type not null,
     created_at timestamp not null default now(),
