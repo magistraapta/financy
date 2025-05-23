@@ -18,6 +18,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.financy.financy.transaction.entity.Transaction;
 import com.financy.financy.transaction.entity.TransactionType;
 import com.financy.financy.transaction.service.TransactionService;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import com.financy.financy.auth.CustomUserDetail;
 
 @RestController
 @RequestMapping("/transactions")
@@ -35,7 +38,9 @@ public class TransactionController {
 
     @GetMapping
     public ResponseEntity<List<Transaction>> getAllTransactions() {
-        return ResponseEntity.ok(transactionService.getAllTransactions());
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        CustomUserDetail userDetails = (CustomUserDetail) authentication.getPrincipal();
+        return ResponseEntity.ok(transactionService.getTransactionsByUserId(userDetails.getUser().getId()));
     }
 
     @GetMapping("/{id}")
