@@ -33,6 +33,7 @@ public class SecurityConfig {
                 .authenticated()
             )
             .httpBasic(Customizer.withDefaults())
+            .formLogin(Customizer.withDefaults())
             .userDetailsService(customUserDetailsService);
         return http.build();
     }

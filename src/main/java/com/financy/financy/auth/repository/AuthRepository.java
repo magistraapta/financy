@@ -10,4 +10,5 @@ import com.financy.financy.auth.entity.User;
 @Repository
 public interface AuthRepository extends JpaRepository<User, Long> {
     Optional<User> findByUsername(String username);
+    boolean existsByUsername(String username);
 }
