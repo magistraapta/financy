@@ -20,8 +20,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.financy.financy.auth.controller.AuthController;
 import com.financy.financy.auth.entity.User;
 import com.financy.financy.auth.service.AuthService;
-import com.financy.financy.auth.CustomUserDetailsService;
-import com.financy.financy.auth.SecurityConfig;
+
 
 @WebMvcTest(AuthController.class)
 @Import(SecurityConfig.class)
