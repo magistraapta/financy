@@ -1,38 +1,27 @@
-import { useEffect, useState } from 'react'
-import './App.css'
+import { Routes, Route } from 'react-router-dom'
+import { AuthProvider } from './components/context/AuthContext'
+import { LoginPage } from './pages/LoginPage'
+import { HomePage } from './pages/HomePage'
+import { Navbar } from './components/Navbar'
+import Footer from './components/Footer'
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
 function App() {
-  const [data, setData] = useState('');
-  const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(true);
-
-  const fetchAuthTest = async () => {
-    try {
-      setLoading(true);
-      const response = await fetch('http://localhost:8080/auth/test');
-      const text = await response.text();
-      setData(text);
-      setError(null);
-    } catch (error) {
-      console.error('Error fetching auth test:', error);
-      setError('Failed to fetch data');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchAuthTest();
-  }, []);
-
   return (
-    <>
-      <div>
-        {loading && <p>Loading...</p>}
-        {error && <p style={{ color: 'red' }}>{error}</p>}
-        {!loading && !error && <p>{data}</p>}
+    <AuthProvider>
+      <div className="min-h-screen bg-gray-50">
+        <Navbar />
+        <main className="w-full px-4 sm:px-6 lg:px-8 py-6">
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/login" element={<LoginPage />} />
+          </Routes>
+        </main>
+        <Footer />
+        <ToastContainer />
       </div>
-    </>
+    </AuthProvider>
   )
 }
 
