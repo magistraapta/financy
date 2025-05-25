@@ -1,5 +1,8 @@
 package com.financy.financy.auth.controller;
 
+import java.util.Optional;
+
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -7,8 +10,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
+import com.financy.financy.auth.dto.AuthResponse;
 import com.financy.financy.auth.entity.User;
 import com.financy.financy.auth.service.AuthService;
 
@@ -27,25 +33,26 @@ public class AuthController {
         return ResponseEntity.ok("Hello World");
     }
 
+    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/register")
-    public ResponseEntity<String> register(@RequestBody User user) {
+    public AuthResponse register(@RequestBody User userRequest) {
         try {
-            authService.register(user);
-            return ResponseEntity.ok("User registered successfully");
+            User user = authService.register(userRequest);
+            return new AuthResponse(user.getId(), user.getUsername());
         } catch (UsernameNotFoundException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody User user) {
+    public AuthResponse login(@RequestBody User userRequest) {
         try {
-            authService.login(user);
-            return ResponseEntity.ok("User logged in successfully");
+            Optional<User> user = authService.login(userRequest);
+            return new AuthResponse(user.get().getId(), user.get().getUsername());
         } catch (BadCredentialsException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         } catch (UsernameNotFoundException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
 }
