@@ -23,7 +23,6 @@ export const TotalIncome = () => {
                 }
             });
             setTotalIncome(response.data);
-            console.log(response.data);
         } catch (error) {
             setError('Error fetching total income: ' + error.message);
         } finally {

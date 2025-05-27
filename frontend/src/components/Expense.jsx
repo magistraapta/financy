@@ -26,7 +26,6 @@ export const Expense = () => {
             })
 
             const data = await response.json()
-            console.log('Raw expense data:', data);
             // Sort the data by date in ascending order
             const sortedData = data.sort((a, b) => new Date(a.date) - new Date(b.date));
             setExpense(sortedData)

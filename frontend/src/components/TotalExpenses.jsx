@@ -22,7 +22,6 @@ export const TotalExpenses = () => {
                 }
             });
             setTotalExpenses(response.data);
-            console.log(response.data);
         } catch (error) {
             setError('Error fetching total expenses: ' + error.message);
         } finally {
