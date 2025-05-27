@@ -1,15 +1,45 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useAuth } from './context/AuthContext';
+
 export const TransactionModal = ({ isOpen, onClose, onSubmit }) => {
   const [formData, setFormData] = useState({
     amount: 0,
     type: 'INCOME',
+    category: 'SALARY',
     date: new Date().toISOString().split('T')[0],
   });
   const { getUser } = useAuth();
 
+  const incomeCategories = [
+    { value: 'SALARY', label: 'Salary' },
+    { value: 'FREELANCE', label: 'Freelance' },
+    { value: 'INVESTMENT', label: 'Investment' },
+    { value: 'BUSINESS', label: 'Business' },
+    { value: 'OTHER_INCOME', label: 'Other Income' }
+  ];
+
+  const expenseCategories = [
+    { value: 'FOOD', label: 'Food' },
+    { value: 'TRANSPORTATION', label: 'Transportation' },
+    { value: 'HOUSING', label: 'Housing' },
+    { value: 'UTILITIES', label: 'Utilities' },
+    { value: 'ENTERTAINMENT', label: 'Entertainment' },
+    { value: 'SHOPPING', label: 'Shopping' },
+    { value: 'HEALTHCARE', label: 'Healthcare' },
+    { value: 'EDUCATION', label: 'Education' },
+    { value: 'TRAVEL', label: 'Travel' },
+    { value: 'OTHER_EXPENSE', label: 'Other Expense' }
+  ];
+
+  // Update category when type changes
+  useEffect(() => {
+    setFormData(prev => ({
+      ...prev,
+      category: prev.type === 'INCOME' ? 'SALARY' : 'FOOD'
+    }));
+  }, [formData.type]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -39,6 +69,8 @@ export const TransactionModal = ({ isOpen, onClose, onSubmit }) => {
       const requestBody = {
         amount: formData.amount,
         type: formData.type,
+        category: formData.category,
+        date: formData.date,
         user: {
           id: user.id
         }
@@ -137,6 +169,33 @@ export const TransactionModal = ({ isOpen, onClose, onSubmit }) => {
             >
               <option value="INCOME">Income</option>
               <option value="EXPENSE">Expense</option>
+            </select>
+          </div>
+
+          <div>
+            <label htmlFor="category" className="block text-sm font-medium text-gray-700">
+              Category
+            </label>
+            <select
+              id="category"
+              name="category"
+              value={formData.category}
+              onChange={handleChange}
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white/80"
+            >
+              {formData.type === 'INCOME' ? (
+                incomeCategories.map(category => (
+                  <option key={category.value} value={category.value}>
+                    {category.label}
+                  </option>
+                ))
+              ) : (
+                expenseCategories.map(category => (
+                  <option key={category.value} value={category.value}>
+                    {category.label}
+                  </option>
+                ))
+              )}
             </select>
           </div>
 
