@@ -6,9 +6,14 @@ Online finance tracker app.
 **Backend**
 - [x] Create auth module
 - [x] Create transaction module
-- [ ] create test for auth module
-- [ ] create test for transaction module
+- [x] create test for auth module
+- [x] create test for transaction module
+- [ ] fix add transaction req body (include date)
+- [ ] add transaction category type
+- [ ] show total income & expense
+
 
 **Frontend**
-- [ ] add tailwind css
-- [ ] Create home page
+- [x] add tailwind css
+- [x] Create home page
+- [ ] show transaction type using pie chart
