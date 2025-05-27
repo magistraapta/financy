@@ -2,6 +2,8 @@ package com.financy.financy.transaction.service;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,12 +16,19 @@ import com.financy.financy.transaction.repository.TransactionRepository;
 @Service
 public class TransactionService {
     private final TransactionRepository transactionRepository;
+    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ISO_DATE;
+    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ISO_DATE_TIME;
 
     public TransactionService(TransactionRepository transactionRepository) {
         this.transactionRepository = transactionRepository;
     }
 
     public Transaction createTransaction(Transaction transaction) {
+        // Handle date if it's a string
+        if (transaction.getDate() == null) {
+            transaction.setDate(LocalDateTime.now());
+        }
+        
         transaction.setCreatedAt(LocalDateTime.now());
         transaction.setUpdatedAt(LocalDateTime.now());
         return transactionRepository.save(transaction);
@@ -59,6 +68,8 @@ public class TransactionService {
             .map(existingTransaction -> {
                 existingTransaction.setAmount(transactionDetails.getAmount());
                 existingTransaction.setType(transactionDetails.getType());
+                existingTransaction.setCategory(transactionDetails.getCategory());
+                existingTransaction.setDate(transactionDetails.getDate());
                 existingTransaction.setUpdatedAt(LocalDateTime.now());
                 return transactionRepository.save(existingTransaction);
             })
