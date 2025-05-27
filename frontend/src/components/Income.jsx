@@ -4,8 +4,10 @@ import { useAuth } from './context/AuthContext';
 
 export const Income = () => {
   const [income, setIncome] = useState();
+  const [filteredIncome, setFilteredIncome] = useState();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [interval, setInterval] = useState('1m'); // Default to 1 month
   const { getUser } = useAuth();
 
   const handleIncome = async () => {
@@ -28,13 +30,46 @@ export const Income = () => {
       }
       
       const data = await response.json()
-      setIncome(data)
+      // Sort the data by date in ascending order
+      const sortedData = data.sort((a, b) => new Date(a.date) - new Date(b.date));
+      setIncome(sortedData)
+      filterDataByInterval(sortedData, interval);
     } catch (error) {
       setError(error.message)
     } finally {
       setLoading(false)
     }
   }
+
+  const filterDataByInterval = (data, selectedInterval) => {
+    if (!data) return;
+    
+    const now = new Date();
+    let startDate = new Date();
+    
+    switch (selectedInterval) {
+      case '1m':
+        startDate.setMonth(now.getMonth() - 1);
+        break;
+      case '3m':
+        startDate.setMonth(now.getMonth() - 3);
+        break;
+      case '1y':
+        startDate.setFullYear(now.getFullYear() - 1);
+        break;
+      default:
+        startDate.setMonth(now.getMonth() - 1);
+    }
+    
+    const filtered = data.filter(item => new Date(item.date) >= startDate);
+    setFilteredIncome(filtered);
+  };
+
+  useEffect(() => {
+    if (income) {
+      filterDataByInterval(income, interval);
+    }
+  }, [interval]);
 
   // Listen for custom event when a new transaction is added
   useEffect(() => {
@@ -58,12 +93,32 @@ export const Income = () => {
   return (
     <div>
       <h1 className='text-2xl font-bold mb-3'>Income</h1>
+      <div className="flex gap-2 mb-4">
+        <button 
+          onClick={() => setInterval('1m')}
+          className={`px-4 py-2 rounded ${interval === '1m' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+        >
+          1 Month
+        </button>
+        <button 
+          onClick={() => setInterval('3m')}
+          className={`px-4 py-2 rounded ${interval === '3m' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+        >
+          3 Months
+        </button>
+        <button 
+          onClick={() => setInterval('1y')}
+          className={`px-4 py-2 rounded ${interval === '1y' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+        >
+          1 Year
+        </button>
+      </div>
       <div className="h-[300px]">
         <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={income} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
+          <LineChart data={filteredIncome} margin={{ top: 5, right: 20, bottom: 5, left: 30 }}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis 
-                dataKey="createdAt" 
+                dataKey="date" 
                 tickFormatter={(date) => new Date(date).toLocaleDateString('en-US', {
                   year: 'numeric',
                   month: '2-digit',
