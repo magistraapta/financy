@@ -34,21 +34,24 @@ export function Navbar() {
 
           {/* User Info */}
           <div className="flex items-center space-x-4">
-            <div className="flex items-center text-gray-600 gap-2">
-            <span className="material-symbols-outlined">person</span>
-              <span className="text-sm">{userIsAuthenticated() ? user?.username : 'Guest'}</span>
-            </div>
+            {userIsAuthenticated() && (
+              <>
+                <div className="flex items-center text-gray-600 gap-2">
+                  <span className="material-symbols-outlined">person</span>
+                  <span className="text-sm">{user?.username}</span>
+                </div>
 
-            {/* Add Transaction Button */}
-            <div>
-              <button
-                onClick={() => setIsModalOpen(true)}
-                disabled={!userIsAuthenticated()}
-                className="text-white bg-blue-700 px-3 py-2 rounded-md text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed hover:bg-blue-800"
-              >
-                Add Transaction
-              </button>
-            </div>
+                {/* Add Transaction Button */}
+                <div>
+                  <button
+                    onClick={() => setIsModalOpen(true)}
+                    className="text-white bg-blue-700 px-3 py-2 rounded-md text-sm font-medium hover:bg-blue-800"
+                  >
+                    Add Transaction
+                  </button>
+                </div>
+              </>
+            )}
 
             {/* Logout Button */}
             {userIsAuthenticated() ? (
