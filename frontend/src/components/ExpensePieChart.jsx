@@ -77,7 +77,7 @@ export const ExpensePieChart = () => {
     return (
         <div className="">
             <div className="h-[400px]">
-                <h3 className="text-xl font-semibold text-center mb-4">Expense Categories</h3>
+                <h3 className="text-center mb-4">Expense Categories</h3>
                 <ResponsiveContainer width="100%" height="100%">
                     <PieChart>
                         <Pie
