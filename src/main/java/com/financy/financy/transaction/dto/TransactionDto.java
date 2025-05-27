@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import com.financy.financy.transaction.entity.TransactionType;
+import com.financy.financy.transaction.entity.TransactionCategory;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -16,6 +17,8 @@ public class TransactionDto {
     private Long id;
     private BigDecimal amount;
     private TransactionType type;
+    private TransactionCategory category;
+    private LocalDateTime date;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }

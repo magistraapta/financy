@@ -3,7 +3,9 @@ package com.financy.financy.transaction.entity;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.financy.financy.auth.entity.User;
+import com.financy.financy.transaction.config.LocalDateTimeDeserializer;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -35,6 +37,11 @@ public class Transaction {
     private BigDecimal amount;
 
     private TransactionType type;
+
+    private TransactionCategory category;
+
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    private LocalDateTime date;
 
     private LocalDateTime createdAt;
 
