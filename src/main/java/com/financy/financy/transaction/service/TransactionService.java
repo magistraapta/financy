@@ -82,4 +82,12 @@ public class TransactionService {
             .map(Transaction::getAmount)
             .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
+
+    public Double getTotalExpensesByUserId(Long userId) {
+        return transactionRepository.getTotalExpensesByUserId(userId);
+    }
+
+    public Double getTotalIncomeByUserId(Long userId) {
+        return transactionRepository.getTotalIncomeByUserId(userId);
+    }
 }

@@ -1,5 +1,7 @@
 package com.financy.financy.transaction.dto;
 
+import java.math.BigDecimal;
+
 import org.springframework.stereotype.Component;
 
 import com.financy.financy.transaction.entity.Transaction;
@@ -29,5 +31,11 @@ public class TransactionMapper {
         transaction.setCreatedAt(dto.getCreatedAt());
         transaction.setUpdatedAt(dto.getUpdatedAt());
         return transaction;
+    }
+
+    public TotalAmountDto toTotalAmountDto(Double amount) {
+        TotalAmountDto dto = new TotalAmountDto();
+        dto.setAmount(amount);
+        return dto;
     }
 }

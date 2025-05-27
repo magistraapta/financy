@@ -1,10 +1,8 @@
 package com.financy.financy.transaction.controller;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -19,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.financy.financy.auth.CustomUserDetail;
+import com.financy.financy.transaction.dto.TotalAmountDto;
 import com.financy.financy.transaction.dto.TransactionDto;
 import com.financy.financy.transaction.dto.TransactionMapper;
 import com.financy.financy.transaction.entity.Transaction;
@@ -107,5 +106,25 @@ public class TransactionController {
     @DeleteMapping("/{id}")
     public void deleteTransaction(@PathVariable Long id) {
         transactionService.deleteTransaction(id);
+    }
+
+    @GetMapping("/total-income")
+    public ResponseEntity<Double> getTotalIncome() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        CustomUserDetail userDetails = (CustomUserDetail) authentication.getPrincipal();
+        Double totalIncome = transactionService.getTotalIncomeByUserId(userDetails.getUser().getId());
+
+        TotalAmountDto totalAmountDto = transactionMapper.toTotalAmountDto(totalIncome);
+        return ResponseEntity.ok(totalAmountDto.getAmount());
+    }
+
+    @GetMapping("/total-expenses")
+    public ResponseEntity<Double> getTotalExpenses() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        CustomUserDetail userDetails = (CustomUserDetail) authentication.getPrincipal();
+        Double totalExpenses = transactionService.getTotalExpensesByUserId(userDetails.getUser().getId());
+
+        TotalAmountDto totalAmountDto = transactionMapper.toTotalAmountDto(totalExpenses);
+        return ResponseEntity.ok(totalAmountDto.getAmount());
     }
 }
