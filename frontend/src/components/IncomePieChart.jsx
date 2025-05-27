@@ -55,6 +55,14 @@ export const IncomePieChart = () => {
         handleIncomePieChartData();
     }, []);
 
+    useEffect(() => {
+        const handleTransactionUpdated = () => {
+            handleIncomePieChartData();
+        };
+        window.addEventListener('transactionUpdated', handleTransactionUpdated);
+        return () => window.removeEventListener('transactionUpdated', handleTransactionUpdated);
+    }, []);
+
     if (loading) {
         return <div className="flex justify-center items-center h-[400px]">Loading...</div>;
     }

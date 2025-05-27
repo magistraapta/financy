@@ -34,6 +34,14 @@ export const TotalIncome = () => {
         handleTotalIncome();
     }, []);
 
+    useEffect(() => {
+        const handleTransactionAdded = () => {
+            handleTotalIncome();
+        };
+        window.addEventListener('transactionAdded', handleTransactionAdded);
+        return () => window.removeEventListener('transactionAdded', handleTransactionAdded);
+    }, []);
+
     if (loading) {
         return <div>Loading...</div>;
     }

@@ -58,17 +58,12 @@ export const ExpensePieChart = () => {
         handleExpensePieChartData();
     }, []);
 
-    // Listen for custom event when transactions are updated
     useEffect(() => {
-        const handleTransactionUpdate = () => {
+        const handleTransactionUpdated = () => {
             handleExpensePieChartData();
         };
-
-        window.addEventListener('transactionUpdated', handleTransactionUpdate);
-        
-        return () => {
-            window.removeEventListener('transactionUpdated', handleTransactionUpdate);
-        };
+        window.addEventListener('transactionUpdated', handleTransactionUpdated);
+        return () => window.removeEventListener('transactionUpdated', handleTransactionUpdated);
     }, []);
 
     if (loading) {

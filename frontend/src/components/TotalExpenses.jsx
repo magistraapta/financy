@@ -33,6 +33,14 @@ export const TotalExpenses = () => {
         handleTotalExpenses();
     }, []);
 
+    useEffect(() => {
+        const handleTransactionAdded = () => {
+            handleTotalExpenses();
+        };
+        window.addEventListener('transactionAdded', handleTransactionAdded);
+        return () => window.removeEventListener('transactionAdded', handleTransactionAdded);
+    }, []);
+
     if (loading) { 
         return <div>Loading...</div>;
     }
