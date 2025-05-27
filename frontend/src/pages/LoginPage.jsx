@@ -81,7 +81,8 @@ export const LoginPage = () => {
 
   return (
     <div className="flex items-center justify-center bg-gray-50 min-h-[550px]">
-      <div className=" p-8 space-y-8 bg-white border border-gray-200 rounded-lg shadow-md">
+      <div className=" min-w-[400px] p-8 space-y-8 bg-white border border-gray-200 rounded-lg shadow-md">
+        <h1 className="text-4xl font-bold text-center text-gray-900">Financy</h1>
         <h2 className="text-3xl font-bold text-center text-gray-900">Login</h2>
         {error && (
           <div className="text-red-500 text-center">{error}</div>
