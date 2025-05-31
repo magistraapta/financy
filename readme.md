@@ -10,8 +10,10 @@ Financy is a full-stack web application for tracking personal finances. It allow
 - Visualize transaction data using charts
 
 ## Screenshots
+### Home Page
 ![Home Page](screenshot/Screenshot%202025-05-31%20at%2021.33.34.png)
 ![Transaction List](screenshot/Screenshot%202025-05-31%20at%2021.33.40.png)
+### Login Page
 ![Transaction Chart](screenshot/Screenshot%202025-05-31%20at%2021.33.45.png)
 
 ## Tech Stack
