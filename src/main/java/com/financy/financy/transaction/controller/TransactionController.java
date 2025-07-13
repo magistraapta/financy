@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.financy.financy.auth.CustomUserDetail;
+import com.financy.financy.transaction.dto.ExpenseComparisonDto;
+import com.financy.financy.transaction.dto.IncomeComparisonDto;
 import com.financy.financy.transaction.dto.TotalAmountDto;
 import com.financy.financy.transaction.dto.TransactionDto;
 import com.financy.financy.transaction.dto.TransactionMapper;
@@ -126,5 +128,99 @@ public class TransactionController {
 
         TotalAmountDto totalAmountDto = transactionMapper.toTotalAmountDto(totalExpenses);
         return ResponseEntity.ok(totalAmountDto.getAmount());
+    }
+
+    @GetMapping("/current-month-income")
+    public ResponseEntity<Double> getCurrentMonthIncome() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        CustomUserDetail userDetails = (CustomUserDetail) authentication.getPrincipal();
+        Double currentMonthIncome = transactionService.getCurrentMonthIncomeByUserId(userDetails.getUser().getId());
+        return ResponseEntity.ok(currentMonthIncome);
+    }
+
+    @GetMapping("/previous-month-income")
+    public ResponseEntity<Double> getPreviousMonthIncome() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        CustomUserDetail userDetails = (CustomUserDetail) authentication.getPrincipal();
+        Double previousMonthIncome = transactionService.getPreviousMonthIncomeByUserId(userDetails.getUser().getId());
+        return ResponseEntity.ok(previousMonthIncome);
+    }
+
+    @GetMapping("/income-comparison")
+    public ResponseEntity<IncomeComparisonDto> getIncomeComparison() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        CustomUserDetail userDetails = (CustomUserDetail) authentication.getPrincipal();
+        
+        Double currentMonthIncome = transactionService.getCurrentMonthIncomeByUserId(userDetails.getUser().getId());
+        Double previousMonthIncome = transactionService.getPreviousMonthIncomeByUserId(userDetails.getUser().getId());
+        
+        Double difference = currentMonthIncome - previousMonthIncome;
+        Double percentageChange = previousMonthIncome > 0 ? (difference / previousMonthIncome) * 100 : 0.0;
+        
+        String trend;
+        if (difference > 0) {
+            trend = "increase";
+        } else if (difference < 0) {
+            trend = "decrease";
+        } else {
+            trend = "no-change";
+        }
+        
+        IncomeComparisonDto comparison = new IncomeComparisonDto(
+            currentMonthIncome, 
+            previousMonthIncome, 
+            difference, 
+            percentageChange, 
+            trend
+        );
+        
+        return ResponseEntity.ok(comparison);
+    }
+
+    @GetMapping("/expense-this-month")
+    public ResponseEntity<Double> getExpenseThisMonth() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        CustomUserDetail userDetails = (CustomUserDetail) authentication.getPrincipal();
+        Double expenseThisMonth = transactionService.getCurrentMonthExpensesByUserId(userDetails.getUser().getId());
+        return ResponseEntity.ok(expenseThisMonth);
+    }
+
+    @GetMapping("/expense-previous-month")
+    public ResponseEntity<Double> getExpensePreviousMonth() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        CustomUserDetail userDetails = (CustomUserDetail) authentication.getPrincipal();
+        Double expensePreviousMonth = transactionService.getPreviousMonthExpensesByUserId(userDetails.getUser().getId());
+        return ResponseEntity.ok(expensePreviousMonth);
+    }
+
+    @GetMapping("/expense-comparison")
+    public ResponseEntity<ExpenseComparisonDto> getExpenseComparison() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        CustomUserDetail userDetails = (CustomUserDetail) authentication.getPrincipal();
+        
+        Double currentMonthExpenses = transactionService.getCurrentMonthExpensesByUserId(userDetails.getUser().getId());
+        Double previousMonthExpenses = transactionService.getPreviousMonthExpensesByUserId(userDetails.getUser().getId());
+        
+        Double difference = currentMonthExpenses - previousMonthExpenses;
+        Double percentageChange = previousMonthExpenses > 0 ? (difference / previousMonthExpenses) * 100 : 0.0;
+        
+        String trend;
+        if (difference > 0) {
+            trend = "increase";
+        } else if (difference < 0) {
+            trend = "decrease";
+        } else {
+            trend = "no-change";
+        }
+
+        ExpenseComparisonDto comparison = new ExpenseComparisonDto(
+            currentMonthExpenses, 
+            previousMonthExpenses, 
+            difference,
+            percentageChange,
+            trend
+        );
+
+        return ResponseEntity.ok(comparison);
     }
 }
