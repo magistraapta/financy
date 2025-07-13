@@ -6,7 +6,7 @@ export const Expense = () => {
     const [expense, setExpense] = useState();
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
-    const [interval, setInterval] = useState('1m')
+    const [interval, setInterval] = useState('3m')
     const [filteredExpense, setFilteredExpense] = useState();
     const { getUser } = useAuth();
 
@@ -59,9 +59,29 @@ export const Expense = () => {
                 startDate.setMonth(now.getMonth() - 1);
         }
         
-        const filteredData = data.filter(item => new Date(item.date) >= startDate);
-        console.log('Filtered expense data:', filteredData);
-        setFilteredExpense(filteredData);
+        // Filter data by date range
+        const filtered = data.filter(item => new Date(item.date) >= startDate);
+        
+        // Group transactions by date and sum amounts
+        const groupedData = filtered.reduce((acc, transaction) => {
+            const dateKey = new Date(transaction.date).toDateString(); // Use date string as key
+            
+            if (!acc[dateKey]) {
+                acc[dateKey] = {
+                    date: transaction.date,
+                    amount: 0
+                };
+            }
+            
+            acc[dateKey].amount += parseFloat(transaction.amount);
+            return acc;
+        }, {});
+        
+        // Convert grouped data back to array and sort by date
+        const aggregatedData = Object.values(groupedData).sort((a, b) => new Date(a.date) - new Date(b.date));
+        
+        console.log('Filtered expense data:', aggregatedData);
+        setFilteredExpense(aggregatedData);
     }
 
     useEffect(() => {
@@ -109,7 +129,6 @@ export const Expense = () => {
         <div className="h-[300px]">
             <ResponsiveContainer width="100%" height="100%">
             <LineChart data={filteredExpense} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" />
                 <XAxis 
                     dataKey="date" 
                     tickFormatter={(date) => new Date(date).toLocaleDateString('en-US', {
@@ -126,7 +145,7 @@ export const Expense = () => {
                     day: '2-digit'
                     })}
                 />
-                <Line type="monotone" dataKey="amount" stroke="#d30000" />
+                <Line type="monotone" dataKey="amount" stroke="#d30000" strokeWidth={2} />
             </LineChart>
             </ResponsiveContainer>
         </div>

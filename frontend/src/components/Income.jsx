@@ -7,7 +7,7 @@ export const Income = () => {
   const [filteredIncome, setFilteredIncome] = useState();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [interval, setInterval] = useState('1m'); // Default to 1 month
+  const [interval, setInterval] = useState('3m'); // Default to 1 month
   const { getUser } = useAuth();
 
   const handleIncome = async () => {
@@ -62,7 +62,24 @@ export const Income = () => {
     }
     
     const filtered = data.filter(item => new Date(item.date) >= startDate);
-    setFilteredIncome(filtered);
+    
+    const groupedData = filtered.reduce((acc, transaction) => {
+      const dateKey = new Date(transaction.date).toDateString(); // Use date string as key
+      
+      if (!acc[dateKey]) {
+        acc[dateKey] = {
+          date: transaction.date,
+          amount: 0
+        };
+      }
+      
+      acc[dateKey].amount += parseFloat(transaction.amount);
+      return acc;
+    }, {});
+    
+    const aggregatedData = Object.values(groupedData).sort((a, b) => new Date(a.date) - new Date(b.date));
+    
+    setFilteredIncome(aggregatedData);
   };
 
   useEffect(() => {
@@ -71,7 +88,6 @@ export const Income = () => {
     }
   }, [interval]);
 
-  // Listen for custom event when a new transaction is added
   useEffect(() => {
     const handleTransactionAdded = () => {
       handleIncome();
@@ -116,7 +132,6 @@ export const Income = () => {
       <div className="h-[300px]">
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={filteredIncome} margin={{ top: 5, right: 20, bottom: 5, left: 30 }}>
-              <CartesianGrid strokeDasharray="3 3" />
               <XAxis 
                 dataKey="date" 
                 tickFormatter={(date) => new Date(date).toLocaleDateString('en-US', {
@@ -133,7 +148,7 @@ export const Income = () => {
                   day: '2-digit'
                 })}
               />
-              <Line type="monotone" dataKey="amount" stroke="#82ca9d" />
+              <Line type="monotone" dataKey="amount" stroke="#82ca9d" strokeWidth={2} />
           </LineChart>
         </ResponsiveContainer>
       </div>
