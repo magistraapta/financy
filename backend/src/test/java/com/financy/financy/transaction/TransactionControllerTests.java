@@ -21,7 +21,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.financy.financy.auth.CustomUserDetailsService;
-import com.financy.financy.auth.SecurityConfig;
+import com.financy.financy.auth.config.SecurityConfig;
 import com.financy.financy.auth.entity.User;
 import com.financy.financy.transaction.controller.TransactionController;
 import com.financy.financy.transaction.dto.TransactionDto;

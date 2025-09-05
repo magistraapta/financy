@@ -16,7 +16,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-
+import com.financy.financy.auth.config.SecurityConfig;
 import com.financy.financy.auth.controller.AuthController;
 import com.financy.financy.auth.entity.User;
 import com.financy.financy.auth.service.AuthService;
